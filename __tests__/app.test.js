@@ -3,6 +3,8 @@ const request = require("supertest");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
+const endpoints = require("../endpoints.json");
+const format = require("pg-format");
 
 afterAll(() => db.end());
 
@@ -34,8 +36,19 @@ describe("GET /api/topics", () => {
       });
   });
 });
-describe("/api/invalid-input", () => {
+describe("GET /api/invalid-input", () => {
   test("GET:404 responds with a 404 when given an invalid path", () => {
     return request(app).get("/api/invalid-input").expect(404);
+  });
+});
+
+describe("GET /api", () => {
+  test("responds with an object describing all the available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.endpoints).toEqual(endpoints);
+      });
   });
 });

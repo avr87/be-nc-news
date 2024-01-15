@@ -1,4 +1,5 @@
 const { fetchTopics } = require("../models/models");
+const endpoints = require("../endpoints.json");
 
 exports.getTopics = (req, res, next) => {
   fetchTopics()
@@ -8,4 +9,8 @@ exports.getTopics = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getApi = (req, res, next) => {
+  res.status(200).send({ endpoints });
 };
