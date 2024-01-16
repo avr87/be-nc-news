@@ -53,7 +53,7 @@ describe("GET /api", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("GET: 200 responds with an array of object with all the info of the correct article_id ", () => {
     return request(app)
       .get("/api/articles/3")
