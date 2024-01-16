@@ -21,7 +21,16 @@ app.use((err, req, res, next) => {
     next(err);
   }
 });
+
 app.use((err, req, res, next) => {
-  res.status(500).send("Server Error!");
+  if (err.code === "42703") {
+    res.status(400).send({msg:"Bad request"});
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  res.status(500).send({msg: "Server Error!"});
 });
 module.exports = app;
