@@ -90,3 +90,56 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles", () => {
+  test("GET: 200 responds with an array of article objects with all the info included", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(13);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(String),
+          });
+        });
+      });
+  });
+  test("GET 200: respondse with an array of article objects sorted in descending order of time created", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("GET 200: respondse with an array of article objects sorted in descending order of time created", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("GET 400: respondse with an array of article objects sorted in descending order of time created", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+});

@@ -1,6 +1,9 @@
-const { fetchTopics, fetchArticleById } = require("../models/models");
+const {
+  fetchTopics,
+  fetchArticleById,
+  fetchArticles,
+} = require("../models/models");
 const endpoints = require("../endpoints.json");
-const Test = require("supertest/lib/test");
 
 exports.getTopics = (req, res, next) => {
   fetchTopics()
@@ -23,6 +26,17 @@ exports.getArticleById = (req, res, next) => {
       res.status(200).send({ article });
     })
     .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getArticles = (req, res, next) => {
+  fetchArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      console.log(err);
       next(err);
     });
 };
