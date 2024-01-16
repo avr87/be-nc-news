@@ -5,14 +5,16 @@ const {
   getTopics,
   getApi,
   getArticleById,
+  getArticles,
 } = require("./controllers/controllers");
-app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
 app.get("/api", getApi);
 
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles", getArticles);
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
@@ -24,13 +26,13 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   if (err.code === "42703") {
-    res.status(400).send({msg:"Bad request"});
+    res.status(400).send({ msg: "Bad request" });
   } else {
     next(err);
   }
 });
 
 app.use((err, req, res, next) => {
-  res.status(500).send({msg: "Server Error!"});
+  res.status(500).send({ msg: "Server Error!" });
 });
 module.exports = app;
