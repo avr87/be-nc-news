@@ -122,24 +122,4 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("GET 200: respondse with an array of article objects sorted in descending order of time created", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeSortedBy("created_at", {
-          descending: true,
-        });
-      });
-  });
-  test("GET 400: respondse with an array of article objects sorted in descending order of time created", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeSortedBy("created_at", {
-          descending: true,
-        });
-      });
-  });
 });

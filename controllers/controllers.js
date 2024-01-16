@@ -36,7 +36,6 @@ exports.getArticles = (req, res, next) => {
       res.status(200).send({ articles });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
