@@ -10,7 +10,7 @@ exports.fetchTopics = () => {
 
 exports.fetchArticleById = (article_id) => {
   return db
-    .query(`SELECT * FROM articles WHERE article_id = ${article_id}`)
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
@@ -18,7 +18,7 @@ exports.fetchArticleById = (article_id) => {
           msg: "There is currently no article with this id available",
         });
       }
-      return rows;
+      return rows[0];
     });
 };
 exports.fetchArticles = () => {
@@ -36,5 +36,19 @@ exports.fetchArticles = () => {
       return rows;
     });
 };
-
-
+exports.fetchCommentsByArticleId = (article_id) => {
+  return db
+    .query(
+      `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`,
+      [article_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "There are currently no comments available",
+        });
+      }
+      return rows;
+    });
+};
