@@ -36,6 +36,7 @@ describe("GET /api/topics", () => {
       });
   });
 });
+
 describe("GET /api/invalid-input", () => {
   test("GET:404 responds with a 404 when given an invalid path", () => {
     return request(app).get("/api/invalid-input").expect(404);
@@ -59,7 +60,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/3")
       .expect(200)
       .then(({ body }) => {
-        expect(body.article[0]).toMatchObject({
+        expect(body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
           topic: expect.any(String),
@@ -120,6 +121,48 @@ describe("GET /api/articles", () => {
         expect(body.articles).toBeSortedBy("created_at", {
           descending: true,
         });
+      });
+  });
+});
+describe("GET /api/articles/:article_id/comments", () => {
+  test("GET: 200 responds with an array of comment objects of that specific article id with all the info included", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(2);
+        expect(body.comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+        body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_id: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("GET: 400 responds with an error message when the request id is invalid ", () => {
+    return request(app)
+      .get("/api/articles/banana/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toEqual("Bad request");
+      });
+  });
+  test("GET: 404 responds with an error message when there are no comments available for the requested article ", () => {
+    return request(app)
+      .get("/api/articles/7/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual(
+          "There are currently no comments available"
+        );
       });
   });
 });

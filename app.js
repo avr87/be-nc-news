@@ -6,7 +6,10 @@ const {
   getApi,
   getArticleById,
   getArticles,
+  getCommentsByArticleId,
 } = require("./controllers/controllers");
+
+
 
 app.get("/api/topics", getTopics);
 
@@ -15,6 +18,8 @@ app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
@@ -25,7 +30,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === "42703") {
+  if (err.code === "42703" || err.code === "22P02") {
     res.status(400).send({ msg: "Bad request" });
   } else {
     next(err);
