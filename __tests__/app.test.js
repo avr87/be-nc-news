@@ -166,3 +166,39 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST: 201 responds with the newly added comment", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({
+        username: "butter_bridge",
+        body: "This is a test body",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment.author).toBe("butter_bridge");
+        expect(body.comment.body).toBe("This is a test body");
+      });
+  });
+  test("POST: 400 when we receive no content", () => {
+    return request(app)
+      .post("/api/articles/5/comments")
+      .send({})
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toEqual("Please insert username and comment");
+      });
+  });
+  test("POST: 404 when we receive a valid but not present article_id ", () => {
+    return request(app)
+      .post("/api/articles/1000/comments")
+      .send({
+        username: "butter_bridge",
+        body: "This is a test body",
+      })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual("No article available");
+      });
+  });
+});
