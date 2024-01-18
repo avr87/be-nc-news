@@ -21,21 +21,33 @@ exports.fetchArticleById = (article_id) => {
       return rows[0];
     });
 };
-exports.fetchArticles = () => {
-  return db
-    .query(
-      `SELECT articles.author,
+exports.fetchArticles = (topic) => {
+  let queryString = `SELECT articles.author,
         articles.title,
         articles.article_id,
         articles.topic,
         articles.created_at,
         articles.votes,
-        articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+        articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id `;
+
+  const queryParameters = [];
+  if (topic) {
+    queryString += " WHERE topic = $1 ";
+    queryParameters.push(topic);
+  }
+  queryString += "GROUP BY articles.article_id ORDER BY created_at DESC";
+
+  return db.query(queryString, queryParameters).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "There is currently no article with this topic available",
+      });
+    }
+    return rows;
+  });
 };
+
 exports.fetchCommentsByArticleId = (article_id) => {
   return db
     .query(
@@ -102,10 +114,8 @@ WHERE comment_id = $1 RETURNING *;`,
       }
     });
 };
-exports.fetchUsers = () =>{
-  
-    return db.query("SELECT * FROM users;").then(({rows}) => {
-      return rows;
-    });
-  
-}
+exports.fetchUsers = () => {
+  return db.query("SELECT * FROM users;").then(({ rows }) => {
+    return rows;
+  });
+};
