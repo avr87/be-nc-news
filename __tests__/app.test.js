@@ -253,9 +253,9 @@ describe("PATCH /api/articles/:article_id", () => {
         );
       });
   });
-  test("GET: 400 responds with an error message when the request id is invalid ", () => {
+  test("PATCH: 400 responds with an error message when the request id is invalid ", () => {
     return request(app)
-      .get("/api/articles/banana")
+      .patch("/api/articles/banana")
       .send({ inc_votes: -100 })
       .expect(400)
       .then((response) => {
