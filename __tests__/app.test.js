@@ -203,3 +203,74 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH: 201 when receiving a positive integer it increments  the votes on the requested article and returns the article with updates votes ", () => {
+    return request(app)
+      .patch("/api/articles/5")
+      .send({ inc_votes: 2 })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(2);
+        expect(body.article).toEqual({
+          article_id: 5,
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: "2020-08-03T13:14:00.000Z",
+          votes: 2,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+  test("PATCH: 201 when receiving a negative integer it decreases the current votes on the requested article and returns the article with updates votes  ", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -100 })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(0);
+        expect(body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 0,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+  test("PATCH: 404 when receiving a valid article_id but there is no article present under that id returns an error stating that ", () => {
+    return request(app)
+      .patch("/api/articles/1000")
+      .send({ inc_votes: -100 })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual(
+          "There is currently no article with this id available"
+        );
+      });
+  });
+  test("PATCH: 400 responds with an error message when the request id is invalid ", () => {
+    return request(app)
+      .patch("/api/articles/banana")
+      .send({ inc_votes: -100 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toEqual("Bad request");
+      });
+  });
+  test("PATCH: 400 responds with an error message when the request id is invalid ", () => {
+    return request(app)
+      .patch("/api/articles/5")
+      .send({ inc_votes: "banana" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toEqual("Bad request");
+      });
+  });
+});
