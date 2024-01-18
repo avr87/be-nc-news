@@ -33,6 +33,7 @@ app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 app.get("/api/users", getUsers);
 
 app.use((err, req, res, next) => {
+ 
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else {

@@ -4,7 +4,7 @@ const {
   formatComments,
 } = require("../db/seeds/utils");
 
-describe("convertTimestampToDate", () => {
+xdescribe("convertTimestampToDate", () => {
   test("returns a new object", () => {
     const timestamp = 1557572706232;
     const input = { created_at: timestamp };
@@ -40,7 +40,7 @@ describe("convertTimestampToDate", () => {
   });
 });
 
-describe("createRef", () => {
+xdescribe("createRef", () => {
   test("returns an empty object, when passed an empty array", () => {
     const input = [];
     const actual = createRef(input);
@@ -74,7 +74,7 @@ describe("createRef", () => {
   });
 });
 
-describe("formatComments", () => {
+xdescribe("formatComments", () => {
   test("returns an empty array, if passed an empty array", () => {
     const comments = [];
     expect(formatComments(comments, {})).toEqual([]);

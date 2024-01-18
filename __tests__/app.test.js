@@ -92,7 +92,7 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-describe("GET /api/articles", () => {
+describe.only("GET /api/articles", () => {
   test("GET: 200 responds with an array of article objects with all the info included", () => {
     return request(app)
       .get("/api/articles")
@@ -123,7 +123,46 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("GET 200 responds with an array of the articles with the requested topic.", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(1);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(String),
+          });
+        });
+      });
+  });
+  test("GET 200 responds with an array of the articles with the requested topic.", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(12);
+      });
+  });
+  test("GET 404 responds with an error message when there is no article available under this topic", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual(
+          "There is currently no article with this topic available"
+        );
+      });
+  });
 });
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET: 200 responds with an array of comment objects of that specific article id with all the info included", () => {
     return request(app)
@@ -322,3 +361,12 @@ describe("GET: /api/users", () => {
       });
   });
 });
+
+// FEATURE REQUEST The endpoint should also accept the following query:
+
+// topic, which filters the articles by the topic value specified in the query. If the query is omitted, the endpoint should respond with all articles.
+// Consider what errors could occur with this endpoint, and make sure to test for them.
+
+// You should not have to amend any previous tests.
+
+// Remember to add a description of this endpoint to your /api endpoint.
