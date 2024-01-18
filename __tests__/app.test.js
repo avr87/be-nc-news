@@ -203,3 +203,63 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH: 201 when receiving a positive integer it increments  the votes on the requested article and returns the article with updates votes ", () => {
+    return request(app)
+      .patch("/api/articles/5")
+      .send({ inc_votes: 2 })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(2);
+        expect(body.article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("PATCH: 201 when receiving a negative integer it decreases the current votes on the requested article and returns the article with updates votes  ", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -100 })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(0);
+        expect(body.article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("PATCH: 404 when receiving a valid article_id but there is no article present under that id returns an error stating that ", () => {
+    return request(app)
+      .patch("/api/articles/1000")
+      .send({ inc_votes: -100 })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual(
+          "There is currently no article with this id available"
+        );
+      });
+  });
+  test("GET: 400 responds with an error message when the request id is invalid ", () => {
+    return request(app)
+      .get("/api/articles/banana")
+      .send({ inc_votes: -100 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toEqual("Bad request");
+      });
+  });
+});
