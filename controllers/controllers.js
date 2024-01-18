@@ -6,6 +6,7 @@ const {
   insertCommentByArticleId,
   removeCommentByCommentId,
   addVotesByArticleId,
+  fetchUsers,
 } = require("../models/models");
 const endpoints = require("../endpoints.json");
 
@@ -86,6 +87,15 @@ exports.deleteCommentByCommentId = (req, res, next) => {
   removeCommentByCommentId(comment_id)
     .then(() => {
       res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+exports.getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch((err) => {
       next(err);

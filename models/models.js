@@ -102,3 +102,10 @@ WHERE comment_id = $1 RETURNING *;`,
       }
     });
 };
+exports.fetchUsers = () =>{
+  
+    return db.query("SELECT * FROM users;").then(({rows}) => {
+      return rows;
+    });
+  
+}
