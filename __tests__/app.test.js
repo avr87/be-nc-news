@@ -90,6 +90,24 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.body.msg).toEqual("Bad request");
       });
   });
+  test("GET: 200 responds with an array of object with all the info of the correct article_id including the comment count ", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(String),
+        });
+      });
+  });
 });
 
 describe("GET /api/articles", () => {
@@ -130,10 +148,10 @@ describe("GET /api/articles", () => {
       .then(({ body }) => {
         expect(body.articles).toHaveLength(1);
         body.articles.forEach((article) => {
+          expect(article.topic).toEqual("cats");
           expect(article).toMatchObject({
             article_id: expect.any(Number),
             title: expect.any(String),
-            topic: expect.any(String),
             author: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
@@ -361,12 +379,3 @@ describe("GET: /api/users", () => {
       });
   });
 });
-
-// FEATURE REQUEST The endpoint should also accept the following query:
-
-// topic, which filters the articles by the topic value specified in the query. If the query is omitted, the endpoint should respond with all articles.
-// Consider what errors could occur with this endpoint, and make sure to test for them.
-
-// You should not have to amend any previous tests.
-
-// Remember to add a description of this endpoint to your /api endpoint.
