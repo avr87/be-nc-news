@@ -1,6 +1,7 @@
 const express = require("express");
 const request = require("supertest");
 const app = express();
+const cors = require('cors');
 const {
   getTopics,
   getApi,
@@ -13,6 +14,7 @@ const {
   getUsers,
 } = require("./controllers/controllers");
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
