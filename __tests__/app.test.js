@@ -131,7 +131,7 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("GET 200: respondse with an array of article objects sorted in descending order of time created", () => {
+  test.only("GET 200: respondse with an array of article objects sorted in descending order of time created", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)

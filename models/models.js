@@ -24,18 +24,17 @@ exports.fetchArticleById = (article_id) => {
       return rows[0];
     });
 };
-exports.fetchArticles = (topic, sorty_by = "created_at", order = "desc") => {
-const validSortQueries = [
-  "created_at", "votes", "comment_count",];
- const validOrderQueries = ["asc", "desc"];
-  
-   if (!validSortQueries.includes(sort_by)) {
+exports.fetchArticles = (topic, sort_by = "created_at", order = "desc") => {
+  const validSortQueries = ["created_at", "votes", "comment_count"];
+  const validOrderQueries = ["asc", "desc"];
+
+  if (!validSortQueries.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "invalid sort_by query" });
   }
   if (!validOrderQueries.includes(order)) {
     return Promise.reject({ status: 400, msg: "invalid order query" });
   }
-  
+
   let queryString = `SELECT articles.author,
         articles.title,
         articles.article_id,
